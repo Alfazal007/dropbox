@@ -1,3 +1,4 @@
+use sqlx::prelude::FromRow;
 use validator::Validate;
 
 #[derive(serde::Deserialize, Validate, Debug)]
@@ -13,5 +14,11 @@ pub struct UserReqBody {
         max = 20,
         message = "Password should be between 6 and 20 length"
     ))]
+    pub password: String,
+}
+
+#[derive(serde::Deserialize, Debug, FromRow)]
+pub struct UserDatabase {
+    pub username: String,
     pub password: String,
 }
