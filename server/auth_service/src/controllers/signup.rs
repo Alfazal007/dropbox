@@ -27,7 +27,7 @@ pub async fn sign_up_controller(
     }
 
     let user_from_db_result =
-        sqlx::query_as::<_, UserDatabase>("select * from users where username=$1")
+        sqlx::query_as::<_, UserDatabase>("select * from users where username=$1 limit 1")
             .bind(&sign_up_user.0.username)
             .fetch_optional(&app_state.db_pool)
             .await;

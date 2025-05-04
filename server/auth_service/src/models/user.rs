@@ -19,6 +19,8 @@ pub struct UserReqBody {
 
 #[derive(serde::Deserialize, Debug, FromRow)]
 pub struct UserDatabase {
+    pub id: i32,
     pub username: String,
     pub password: String,
+    pub machine_count: i32,
 }
