@@ -16,6 +16,7 @@ use crate::{
 struct Token {
     id: String,
     machine_count: i32,
+    user_id: i32,
 }
 
 pub async fn sign_in_controller(
@@ -110,8 +111,14 @@ pub async fn sign_in_controller(
             .username,
     );
 
+    let value_redis = format!(
+        "{}/{}",
+        user_from_db_result.as_ref().unwrap().as_ref().unwrap().id,
+        id
+    );
+
     let mut redis_connection = app_state.redis_conn.get().unwrap();
-    let redis_result: RedisResult<()> = redis_connection.set(key_redis, &id);
+    let redis_result: RedisResult<()> = redis_connection.set(key_redis, value_redis);
     if redis_result.is_err() {
         return HttpResponse::InternalServerError().json(GeneralErrorsToBeReturned {
             errors: "Issue talking to redis".to_string(),
@@ -119,6 +126,12 @@ pub async fn sign_in_controller(
     }
     HttpResponse::Ok().json(Token {
         id,
-        machine_count: user_from_db_result.unwrap().unwrap().machine_count,
+        machine_count: user_from_db_result
+            .as_ref()
+            .unwrap()
+            .as_ref()
+            .unwrap()
+            .machine_count,
+        user_id: user_from_db_result.unwrap().unwrap().id,
     })
 }
