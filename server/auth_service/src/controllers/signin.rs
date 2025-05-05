@@ -15,6 +15,7 @@ use crate::{
 #[derive(serde::Serialize)]
 struct Token {
     id: String,
+    machine_count: i32,
 }
 
 pub async fn sign_in_controller(
@@ -93,7 +94,7 @@ pub async fn sign_in_controller(
     }
 
     let id = Uuid::new_v4().to_string();
-    let value_redis = format!(
+    let key_redis = format!(
         "{}{}",
         user_from_db_result
             .as_ref()
@@ -101,14 +102,23 @@ pub async fn sign_in_controller(
             .as_ref()
             .unwrap()
             .machine_count,
-        id
+        user_from_db_result
+            .as_ref()
+            .unwrap()
+            .as_ref()
+            .unwrap()
+            .username,
     );
+
     let mut redis_connection = app_state.redis_conn.get().unwrap();
-    let redis_result: RedisResult<()> = redis_connection.set(&user_from_db.username, value_redis);
+    let redis_result: RedisResult<()> = redis_connection.set(key_redis, &id);
     if redis_result.is_err() {
         return HttpResponse::InternalServerError().json(GeneralErrorsToBeReturned {
             errors: "Issue talking to redis".to_string(),
         });
     }
-    HttpResponse::Ok().json(Token { id })
+    HttpResponse::Ok().json(Token {
+        id,
+        machine_count: user_from_db_result.unwrap().unwrap().machine_count,
+    })
 }
