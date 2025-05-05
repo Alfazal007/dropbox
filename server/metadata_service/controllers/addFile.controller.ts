@@ -50,7 +50,7 @@ async function addFileHandler(req: Request, res: Response) {
                     file_path: parsedData.data.filePath,
                     hashes: parsedData.data.hashesOfFile,
                     user_id: req.user_id,
-                    version_number: versionOfFile
+                    version_number: versionOfFile,
                 }
             })
         )
