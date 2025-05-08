@@ -39,5 +39,6 @@ func Signin(username, password string) TokenSignin {
 	if res.StatusCode != 200 {
 		panic("Issue signing in")
 	}
+
 	return responseSignin
 }
