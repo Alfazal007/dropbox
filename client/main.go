@@ -2,18 +2,12 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"sync"
 
 	"github.com/Alfazal/dropbox/auth"
-	"github.com/fsnotify/fsnotify"
+	"github.com/Alfazal/dropbox/types"
+	"github.com/Alfazal/dropbox/upload"
 )
-
-type FilesBeingUploaded struct {
-	mutex       sync.RWMutex
-	filePaths   []string
-	curFilePath string
-}
 
 // get all files to pull, check if any already exists if not pull
 func main() {
@@ -47,63 +41,20 @@ func main() {
 		fmt.Println(responseSignin)
 	}
 
-	filesBeingUploaded := FilesBeingUploaded{
-		mutex:       sync.RWMutex{},
-		filePaths:   []string{},
-		curFilePath: "",
+	filesBeingUploaded := types.FilesBeingUploaded{
+		Mutex:       sync.RWMutex{},
+		FilePaths:   []string{},
+		CurFilePath: "",
 	}
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		panic(err)
-	}
-
-	defer watcher.Close()
-
-	watcher.Add("./state/files/uploaded/")
 	wg := sync.WaitGroup{}
-	wg.Add(1)
-
+	wg.Add(2)
 	go func() {
 		defer wg.Done()
-		for {
-			select {
-			case event, ok := <-watcher.Events:
-				if !ok {
-					return
-				}
-				switch event.Op {
-				case fsnotify.Create:
-					fmt.Println("New file")
-					filesBeingUploaded.mutex.Lock()
-					result := []string{}
-					for _, value := range filesBeingUploaded.filePaths {
-						if value != event.Name {
-							result = append(result, value)
-						}
-					}
-					filesBeingUploaded.filePaths = result
-					filesBeingUploaded.filePaths = append(filesBeingUploaded.filePaths, event.Name)
-					filesBeingUploaded.mutex.Unlock()
-				case fsnotify.Remove:
-					fmt.Println("Removed file")
-					filesBeingUploaded.mutex.Lock()
-					result := []string{}
-					for _, value := range filesBeingUploaded.filePaths {
-						if value != event.Name {
-							result = append(result, value)
-						}
-					}
-					filesBeingUploaded.filePaths = result
-					filesBeingUploaded.mutex.Unlock()
-				}
-			case err, ok := <-watcher.Errors:
-				if !ok {
-					return
-				}
-				log.Println("error:", err)
-			}
-			fmt.Println(filesBeingUploaded.filePaths)
-		}
+		upload.HandleUpload(&filesBeingUploaded)
+	}()
+	go func() {
+		defer wg.Done()
+		upload.UploadOneFile(&filesBeingUploaded)
 	}()
 
 	wg.Wait()
