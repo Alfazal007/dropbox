@@ -21,6 +21,7 @@ async function addFileHandler(req: Request, res: Response) {
         return
     }
 
+    let fileId: number = -1
     const txResult = await tryCatch(prisma.$transaction(async (tx) => {
         const existingVersion = await tryCatch(tx.$queryRaw<Metadata[]>`
   SELECT * FROM \"Metadata\"
@@ -55,13 +56,13 @@ async function addFileHandler(req: Request, res: Response) {
             })
         )
         if (newFileEntry.error) {
-            console.log(newFileEntry.error)
             await tx.$executeRaw`ROLLBACK`;
             res.status(500).json({
                 error: "Issue talking to the server"
             })
             return
         }
+        fileId = newFileEntry.data.id
     }, {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable
     }))
@@ -73,7 +74,7 @@ async function addFileHandler(req: Request, res: Response) {
         return
     }
     res.status(201).json({
-        message: "created the file"
+        fileId
     })
     return
 }

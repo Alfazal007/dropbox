@@ -22,6 +22,8 @@ async function isDataPresent(req: Request, res: Response) {
         })
         return
     }
+    console.log("File id ", parsedData.data.fileId)
+    console.log("User id ", req.user_id)
     const dataFromDbResult = await tryCatch(prisma.metadata.findFirst({
         where: {
             AND: [
@@ -40,18 +42,15 @@ async function isDataPresent(req: Request, res: Response) {
         })
         return
     }
+    // TODO:: Remove this line
+    console.log(dataFromDbResult)
     if (!dataFromDbResult.data) {
         res.status(404).json({
             message: "Not found the file id"
         })
         return
     }
-    if (!dataFromDbResult.data.uploaded) {
-        res.status(404).json({
-            message: "Not yet fully uploaded"
-        })
-        return
-    }
+
     let hashExists = false
     for (let i = 0; i < dataFromDbResult.data.hashes.length; i++) {
         if (dataFromDbResult.data.hashes[i] == parsedData.data.hash) {
@@ -59,14 +58,17 @@ async function isDataPresent(req: Request, res: Response) {
             break
         }
     }
+
     if (!hashExists) {
+        // TODO:: Remove this line
+        console.log("Not foind the hash")
         res.status(404).json({
             message: "Hash not found"
         })
         return
     }
 
-    const publicId = `dropbox/${req.user_id}/${parsedData.data.hash}`
+    const publicId = `dropbox/${req.user_id}/${parsedData.data.fileId}/${parsedData.data.hash}`
     const resourceExists = await CloudinaryManager.getInstance().resourceExists(publicId)
     if (!resourceExists[0]) {
         res.status(200).json({

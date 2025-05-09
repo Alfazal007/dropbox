@@ -54,7 +54,7 @@ func main() {
 	}()
 	go func() {
 		defer wg.Done()
-		upload.UploadOneFile(&filesBeingUploaded)
+		upload.UploadOneFile(&filesBeingUploaded, responseSignin, username)
 	}()
 
 	wg.Wait()
