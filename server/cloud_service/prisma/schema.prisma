@@ -15,4 +15,5 @@ model Metadata {
   version_number Int      @default(0)
   hashes         String[]
   uploaded       Boolean  @default(false)
+  machine_id     Int
 }

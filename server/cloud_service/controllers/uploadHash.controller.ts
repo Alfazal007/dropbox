@@ -7,7 +7,10 @@ async function uploadHash(req: Request, res: Response) {
         })
         return
     }
-    // TODO:: write the client first
+    console.log(req.body)
+    res.status(200).json({
+        message: "working"
+    })
 }
 
 export {

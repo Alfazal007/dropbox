@@ -47,15 +47,18 @@ func main() {
 		CurFilePath: "",
 	}
 	wg := sync.WaitGroup{}
-	wg.Add(2)
+	wg.Add(3)
 	go func() {
 		defer wg.Done()
 		upload.HandleUpload(&filesBeingUploaded)
 	}()
 	go func() {
 		defer wg.Done()
-		upload.UploadOneFile(&filesBeingUploaded, responseSignin, username)
+		upload.UploadOneFileHash(&filesBeingUploaded, responseSignin, username)
 	}()
-
+	go func() {
+		defer wg.Done()
+		upload.GetWhatToSend()
+	}()
 	wg.Wait()
 }
