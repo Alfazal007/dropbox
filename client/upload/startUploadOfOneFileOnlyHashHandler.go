@@ -21,7 +21,7 @@ type CreateFileDbHash struct {
 }
 
 type IsFilePresent struct {
-	found bool
+	Found bool `json:"found"`
 }
 
 func UploadOneFileHash(filesBeingUploaded *types.FilesBeingUploaded, userData auth.TokenSignin, username string) {

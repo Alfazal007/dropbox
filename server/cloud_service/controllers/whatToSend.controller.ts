@@ -16,7 +16,7 @@ async function whatToSend(req: Request, res: Response) {
                     uploaded: false
                 }
             ]
-        }
+        },
     }))
     if (dataUserShouldSend.error) {
         res.status(500).json({
@@ -25,11 +25,15 @@ async function whatToSend(req: Request, res: Response) {
         return
     }
     if (!dataUserShouldSend.data) {
-        res.status(200).json({})
+        res.status(200).json({
+            path: "",
+            fileId: -1
+        })
         return
     }
     res.status(200).json({
-        path: dataUserShouldSend.data.file_path
+        path: dataUserShouldSend.data.file_path,
+        fileId: dataUserShouldSend.data.id,
     })
     return
 }

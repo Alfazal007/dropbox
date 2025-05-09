@@ -42,8 +42,6 @@ async function isDataPresent(req: Request, res: Response) {
         })
         return
     }
-    // TODO:: Remove this line
-    console.log(dataFromDbResult)
     if (!dataFromDbResult.data) {
         res.status(404).json({
             message: "Not found the file id"
@@ -60,8 +58,6 @@ async function isDataPresent(req: Request, res: Response) {
     }
 
     if (!hashExists) {
-        // TODO:: Remove this line
-        console.log("Not foind the hash")
         res.status(404).json({
             message: "Hash not found"
         })

@@ -58,7 +58,7 @@ func main() {
 	}()
 	go func() {
 		defer wg.Done()
-		upload.GetWhatToSend()
+		upload.GetWhatToSend(username, responseSignin)
 	}()
 	wg.Wait()
 }
