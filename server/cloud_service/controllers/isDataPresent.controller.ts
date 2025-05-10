@@ -64,7 +64,7 @@ async function isDataPresent(req: Request, res: Response) {
         return
     }
 
-    const publicId = `dropbox/${req.user_id}/${parsedData.data.fileId}/${parsedData.data.hash}`
+    const publicId = `dropbox/${req.user_id}/${parsedData.data.hash}`
     const resourceExists = await CloudinaryManager.getInstance().resourceExists(publicId)
     if (!resourceExists[0]) {
         res.status(200).json({

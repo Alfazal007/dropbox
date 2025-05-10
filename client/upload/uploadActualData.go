@@ -77,12 +77,15 @@ func sendWholeFile(filePath string, fileId int64, userData auth.TokenSignin, use
 			return
 		}
 		if !fileAlreadyExists {
-			uploadResult := sendBuffer(buffer, userData, username, fileId)
-			// TODO:: upload the file
+			uploadSuccess := sendBuffer(buffer, userData, username, fileId, hash)
+			if !uploadSuccess {
+				file.Close()
+				return
+			}
 		}
 	}
 	file.Close()
-	// TODO:: send request to update the status of uploaded to true if no early return
+	updateFileStatus(fileId, username, userData)
 }
 
 func checkIfFileExists(hash string, userData auth.TokenSignin, username string, fileId int64) (bool, error) {
@@ -109,10 +112,11 @@ func checkIfFileExists(hash string, userData auth.TokenSignin, username string, 
 	return isFilePresentInServer.Found, nil
 }
 
-func sendBuffer(hashOfFile []byte, userData auth.TokenSignin, username string, fileId int64) bool {
+func sendBuffer(hashOfFile []byte, userData auth.TokenSignin, username string, fileId int64, hash string) bool {
 	data := map[string]any{
 		"fileId": fileId,
 		"file":   hashOfFile,
+		"hash":   hash,
 	}
 	jsonData, _ := json.Marshal(data)
 	postUrl := fmt.Sprintf("http://localhost:8002/api/v1/data/sendData/%s/%s/%d", username, userData.Token, userData.MachineCount)
@@ -125,12 +129,7 @@ func sendBuffer(hashOfFile []byte, userData auth.TokenSignin, username string, f
 		fmt.Println("Failed to upload the file")
 		return false
 	}
-	var isFilePresentInServer IsFilePresent
-	err = json.NewDecoder(res.Body).Decode(&isFilePresentInServer)
-	if err != nil {
-		return false
-	}
-	return false
+	return true
 }
 
 func deleteFileFromServer(fileId int64, username string, token auth.TokenSignin) {
@@ -140,6 +139,20 @@ func deleteFileFromServer(fileId int64, username string, token auth.TokenSignin)
 	jsonData, _ := json.Marshal(data)
 	deleteUrl := fmt.Sprintf("http://localhost:8001/api/v1/metadata/deleteFile/%s/%s/%d", username, token.Token, token.MachineCount)
 	resp, err := http.Post(deleteUrl, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println("Delete file status is ", resp.StatusCode)
+}
+
+func updateFileStatus(fileId int64, username string, token auth.TokenSignin) {
+	data := map[string]any{
+		"fileId": fileId,
+	}
+	jsonData, _ := json.Marshal(data)
+	updateStatusUrl := fmt.Sprintf("http://localhost:8001/api/v1/metadata/updateStatus/%s/%s/%d", username, token.Token, token.MachineCount)
+	resp, err := http.Post(updateStatusUrl, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return
 	}
