@@ -52,7 +52,8 @@ async function addFileHandler(req: Request, res: Response) {
                     hashes: parsedData.data.hashesOfFile,
                     user_id: req.user_id,
                     version_number: versionOfFile,
-                    machine_id: req.machine_count
+                    machine_id: req.machine_count,
+                    isLatest: false
                 }
             })
         )

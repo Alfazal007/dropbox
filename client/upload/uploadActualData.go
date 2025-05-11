@@ -157,5 +157,5 @@ func updateFileStatus(fileId int64, username string, token auth.TokenSignin) {
 		return
 	}
 	defer resp.Body.Close()
-	fmt.Println("Delete file status is ", resp.StatusCode)
+	fmt.Println("Update file status is ", resp.StatusCode)
 }

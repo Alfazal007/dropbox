@@ -29,8 +29,10 @@ class CloudinaryManager {
         const dataUri = `data:application/octet-stream;base64,${base64data}`;
         const response = await tryCatch(cloudinary.uploader.upload(dataUri, {
             public_id: publicId,
-            resource_type: "raw"
+            resource_type: "raw",
+            invalidate: true
         }))
+        console.log({ response })
         if (response.error) {
             return false
         }

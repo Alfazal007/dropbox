@@ -18,11 +18,13 @@ class CloudinaryManager {
     }
 
     async resourceExists(publicId: string): Promise<boolean> {
-        const resourceExists = await tryCatch(cloudinary.api.resource(publicId))
+        const resourceExists = await tryCatch(cloudinary.api.resource(publicId, {
+            resource_type: "raw"
+        }))
         if (resourceExists.error) {
             return false
         }
-        if (!resourceExists.data[0]) {
+        if (!resourceExists.data.asset_id) {
             return false
         }
         return true

@@ -1,0 +1,30 @@
+# github.com/cloudinary/cloudinary-go/v2 v2.9.1
+## explicit; go 1.20
+github.com/cloudinary/cloudinary-go/v2
+github.com/cloudinary/cloudinary-go/v2/api
+github.com/cloudinary/cloudinary-go/v2/api/admin
+github.com/cloudinary/cloudinary-go/v2/api/admin/metadata
+github.com/cloudinary/cloudinary-go/v2/api/admin/search
+github.com/cloudinary/cloudinary-go/v2/api/uploader
+github.com/cloudinary/cloudinary-go/v2/asset
+github.com/cloudinary/cloudinary-go/v2/config
+github.com/cloudinary/cloudinary-go/v2/internal/signature
+github.com/cloudinary/cloudinary-go/v2/logger
+github.com/cloudinary/cloudinary-go/v2/transformation
+# github.com/creasty/defaults v1.8.0
+## explicit; go 1.14
+github.com/creasty/defaults
+# github.com/fsnotify/fsnotify v1.9.0
+## explicit; go 1.17
+github.com/fsnotify/fsnotify
+github.com/fsnotify/fsnotify/internal
+# github.com/google/uuid v1.6.0
+## explicit
+github.com/google/uuid
+# github.com/gorilla/schema v1.4.1
+## explicit; go 1.20
+github.com/gorilla/schema
+# golang.org/x/sys v0.13.0
+## explicit; go 1.17
+golang.org/x/sys/unix
+golang.org/x/sys/windows

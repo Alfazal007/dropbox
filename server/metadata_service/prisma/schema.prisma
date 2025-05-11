@@ -16,4 +16,5 @@ model Metadata {
   hashes         String[]
   uploaded       Boolean  @default(false)
   machine_id     Int
+  isLatest Boolean
 }

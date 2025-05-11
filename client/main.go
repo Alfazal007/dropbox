@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/Alfazal/dropbox/auth"
+	"github.com/Alfazal/dropbox/download"
 	"github.com/Alfazal/dropbox/types"
 	"github.com/Alfazal/dropbox/upload"
 )
@@ -47,18 +48,25 @@ func main() {
 		CurFilePath: "",
 	}
 	wg := sync.WaitGroup{}
-	wg.Add(3)
+	wg.Add(4)
 	go func() {
 		defer wg.Done()
 		upload.HandleUpload(&filesBeingUploaded)
 	}()
+
 	go func() {
 		defer wg.Done()
 		upload.UploadOneFileHash(&filesBeingUploaded, responseSignin, username)
 	}()
+
 	go func() {
 		defer wg.Done()
 		upload.GetWhatToSend(username, responseSignin)
+	}()
+
+	go func() {
+		defer wg.Done()
+		download.GetWhatToDownloadNext(username, responseSignin)
 	}()
 	wg.Wait()
 }
