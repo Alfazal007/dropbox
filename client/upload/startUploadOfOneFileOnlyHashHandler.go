@@ -54,7 +54,7 @@ func uploadFile(fileToUpload string, userData auth.TokenSignin, username string)
 		fmt.Println("Error opening file:", err)
 		return
 	}
-	const chunkSize = 1024
+	const chunkSize = 1024 * 1024 * 5
 	buffer := make([]byte, chunkSize)
 	var hashes []string
 	for {

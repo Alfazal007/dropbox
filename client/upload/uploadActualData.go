@@ -59,7 +59,7 @@ func sendWholeFile(filePath string, fileId int64, userData auth.TokenSignin, use
 		fmt.Println("Error opening file:", err)
 		return
 	}
-	const chunkSize = 1024
+	const chunkSize = 1024 * 1024 * 5
 	buffer := make([]byte, chunkSize)
 	for {
 		bytesRead, err := file.Read(buffer)

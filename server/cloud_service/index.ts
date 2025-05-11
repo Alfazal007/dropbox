@@ -5,7 +5,9 @@ import { cloudDataRouter } from "./routes/cloudData.router"
 configDotenv()
 
 const app = express()
-app.use(express.json())
+app.use(express.json({
+    limit: "10mb"
+}))
 
 app.use("/api/v1/data", cloudDataRouter)
 
